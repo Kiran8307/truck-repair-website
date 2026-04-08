@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 export default function Footer() {
   return (
     <footer>
-      <div style={{display: 'flex', flexWrap: 'wrap', gap: '50px', maxWidth: '1200px', margin: '0 auto', textAlign: 'left', paddingBottom: '50px', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+      <div className="footer-container" style={{display: 'flex', flexWrap: 'wrap', gap: '50px', maxWidth: '1200px', margin: '0 auto', textAlign: 'left', paddingBottom: '50px', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
         <div style={{flex: 1, minWidth: '300px'}}>
             <div className="nav-logo" style={{marginBottom: '20px'}}>
                 <img src="/red_logo.png" alt="Shree Laxmi Garage Logo" style={{height: '80px'}} />

@@ -7,7 +7,7 @@ export default function AboutUs() {
       </div>
 
       <div className="inner-content reveal delay-2">
-        <div style={{ display: 'flex', gap: '50px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '80px' }}>
+        <div style={{ display: 'flex', gap: '50px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '80px', paddingTop: '50px' }}>
           <div style={{ flex: 1, minWidth: '300px' }}>
             <h2 style={{ color: '#fff', marginBottom: '20px' }}>Our History</h2>
             <p style={{ marginBottom: '20px' }}>

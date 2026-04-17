@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import Logo from './Logo';
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,11 +16,25 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpen]);
+
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-      <div className="nav-header">
-        <Link to="/" className="nav-logo">
-          <img src="/red_logo.png" alt="Shree Laxmi Garage Logo" />
+    <nav ref={navRef} className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+      <div className={`nav-header ${menuOpen ? 'menu-open' : ''}`}>
+        <Link to="/" className="nav-logo" style={{ textDecoration: 'none' }}>
+          <Logo />
         </Link>
         <div className="mobile-menu-icon" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? '✕' : '☰'}

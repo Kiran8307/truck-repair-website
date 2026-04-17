@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import CTA from '../components/CTA';
+import BreadcrumbHeader from '../components/BreadcrumbHeader';
 
 const serviceData = {
   'color-work': {
@@ -35,20 +36,20 @@ const serviceData = {
     features: ['Priority Service Queues', 'Preventative Rust Maintenance', 'Monthly Fleet Audits']
   },
   'gas-welding': {
-    title: 'Precision Gas Welding',
+    title: 'Gas Welding for Show/ Cabin',
     icon: '🔥',
     image: '/truck_welding.png',
-    desc: 'Precision oxy-fuel welding for cast iron components, advanced cutting, and specialized heavy metal joining.',
-    details: 'For delicate but heavy engine blocks or specific commercial metal alloys, our oxy-acetylene torches ensure precision melting without destroying the surrounding heat-treated metals.',
-    features: ['Cast-Iron Block Repairs', 'Oxy-Acetylene Cutting', 'Heat-Treated Joint Fusion']
+    desc: 'Gas welding for Show/ Cabin.',
+    details: 'Specialized gas welding techniques specifically refined for detailed Show truck prep and Cabin refurbishment, ensuring clean and precise joints.',
+    features: ['Show Truck Prep', 'Cabin Refurbishment', 'Detailed Joint Work']
   },
   'electric-welding': {
-    title: 'Electric ARC/MIG Welding',
+    title: 'Electric Welding for Body of truck',
     icon: '⚡',
     image: '/truck_welding.png',
-    desc: 'High-penetration ARC and MIG welding for structural steel reinforcement and undercarriage armor rebuilding.',
-    details: 'When repairing a broken frame, strength is non-negotiable. We use ultra-high amperage electric welding to fuse heavy structural steel back together cleanly, ensuring maximum load-bearing limits are restored.',
-    features: ['High-Amperage Penetration', 'Structural Beam Fusion', 'MIG & TIG Industrial Outputs']
+    desc: 'Electric Welding for Body of truck.',
+    details: 'Heavy-duty Electric Welding for body of truck. We use ultra-high amperage electric welding to fuse heavy structural steel back together cleanly, ensuring maximum load-bearing limits are restored.',
+    features: ['High-Amperage Penetration', 'Structural Beam Fusion', 'Industrial Outputs']
   },
   'making-containers': {
     title: 'Making Containers',
@@ -78,10 +79,7 @@ export default function ServicePage() {
 
   return (
     <div className="page-container">
-      <div className="inner-header">
-        <div style={{fontSize: '5rem', marginBottom: '20px', filter: 'drop-shadow(0 0 10px rgba(230,0,0,0.5))'}} className="reveal">{service.icon}</div>
-        <h1 className="reveal delay-1">{service.title}</h1>
-      </div>
+      <BreadcrumbHeader title={service.title} subtitle={service.desc.substring(0, 50) + '...'} image={service.image === '/truck_crash.png' ? '/truck_painting.png' : service.image} />
       
       <div className="inner-content reveal delay-2">
         <div style={{display: 'flex', gap: '40px', flexWrap: 'wrap', alignItems: 'flex-start'}}>

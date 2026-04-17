@@ -1,13 +1,11 @@
 import { Link } from 'react-router-dom';
 import CTA from '../components/CTA';
+import BreadcrumbHeader from '../components/BreadcrumbHeader';
 
 export default function Services() {
   return (
     <div className="page-container">
-      <div className="inner-header">
-        <h1 className="reveal">Our Services</h1>
-        <p className="reveal delay-1" style={{fontSize: '1.5rem', marginTop: '20px', color: 'var(--primary-color)'}}>Comprehensive Commercial Fleet Solutions</p>
-      </div>
+      <BreadcrumbHeader title="Our Services" subtitle="Comprehensive Commercial Fleet Solutions" image="/truck_painting.png" />
       
       <div className="inner-content reveal delay-2">
         <div className="services-grid">
@@ -37,14 +35,14 @@ export default function Services() {
           
           <Link to="/services/gas-welding" className="service-card reveal delay-1">
             <div className="service-icon">🔥</div>
-            <h3>Precision Gas</h3>
-            <p>Oxy-fuel welding for cast iron components.</p>
+            <h3>Gas Welding</h3>
+            <p>Gas welding for Show/ Cabin.</p>
           </Link>
           
           <Link to="/services/electric-welding" className="service-card reveal delay-2">
             <div className="service-icon">⚡</div>
-            <h3>Electric ARC</h3>
-            <p>High-penetration structural steel fusion.</p>
+            <h3>Electric Welding</h3>
+            <p>Electric Welding for body of truck.</p>
           </Link>
           
           <Link to="/services/making-containers" className="service-card reveal">

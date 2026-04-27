@@ -12,6 +12,16 @@ export default function Gallery() {
   const [caption, setCaption] = useState('');
   const [isUploading, setIsUploading] = useState(false);
 
+  // Generate or retrieve a persistent uploader ID for this browser
+  const [uploaderId] = useState(() => {
+    let id = localStorage.getItem('uploader_id');
+    if (!id) {
+      id = 'user_' + Math.random().toString(36).substring(2, 15) + Date.now();
+      localStorage.setItem('uploader_id', id);
+    }
+    return id;
+  });
+
   useEffect(() => {
     const q = query(collection(db, 'gallery'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -28,6 +38,16 @@ export default function Gallery() {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert("Please upload a valid image file (PNG, JPG, WEBP, etc.)");
+        e.target.value = null;
+        return;
+      }
+      if (file.size > 15 * 1024 * 1024) {
+        alert("File size is too large. Please choose a photo under 15MB.");
+        e.target.value = null;
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (event) => {
         const img = new Image();
@@ -68,28 +88,32 @@ export default function Gallery() {
     if (pendingUpload && !isUploading) {
       setIsUploading(true);
       try {
-        const imageName = `fleet_${Date.now()}.jpg`;
-        const storageRef = ref(storage, `gallery/${imageName}`);
-        
-        // Upload the base64 string
-        await uploadString(storageRef, pendingUpload, 'data_url');
-        
-        // Get the public URL
-        const downloadURL = await getDownloadURL(storageRef);
-        
-        // Save to Firestore
-        await addDoc(collection(db, 'gallery'), {
-          src: downloadURL,
-          storagePath: `gallery/${imageName}`,
+        if (pendingUpload.length > 900000) {
+           alert("Compression failed to make the image small enough for the database. Please try a different photo.");
+           setIsUploading(false);
+           return;
+        }
+
+        const uploadTask = addDoc(collection(db, 'gallery'), {
+          src: pendingUpload,
+          storagePath: null, 
           title: caption || 'Fleet Photo',
+          uploaderId: uploaderId,
           createdAt: serverTimestamp()
         });
+
+        // 15 second timeout to prevent indefinite hanging on mobile
+        const timeoutTask = new Promise((_, reject) => 
+           setTimeout(() => reject(new Error("Network connection timed out. Your browser might be blocking the database connection.")), 15000)
+        );
+
+        await Promise.race([uploadTask, timeoutTask]);
         
         setPendingUpload(null);
         setCaption('');
       } catch (error) {
         console.error("Error uploading image: ", error);
-        alert("Upload failed.");
+        alert(`Upload failed: ${error.message}`);
       } finally {
         setIsUploading(false);
       }
@@ -126,7 +150,7 @@ export default function Gallery() {
         <div style={{textAlign: 'center', marginBottom: '60px'}}>
             <input 
                 type="file" 
-                accept="image/*" 
+                accept="image/jpeg, image/png, image/webp, image/*" 
                 ref={fileInputRef} 
                 style={{display: 'none'}} 
                 onChange={handleFileUpload} 
@@ -170,12 +194,14 @@ export default function Gallery() {
                    <img src={img.src} alt={img.title} />
                    <div className="gallery-caption" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                        <h4>{img.title}</h4>
-                       <button 
-                          onClick={() => deleteImage(img.id, img.storagePath)}
-                          style={{background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', zIndex: 10}}
-                       >
-                         Delete
-                       </button>
+                       {img.uploaderId === uploaderId && (
+                         <button 
+                            onClick={() => deleteImage(img.id, img.storagePath)}
+                            style={{background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', zIndex: 10}}
+                         >
+                           Delete
+                         </button>
+                       )}
                    </div>
                </div>
             ))}
